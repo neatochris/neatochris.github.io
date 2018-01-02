@@ -1,0 +1,194 @@
+<html>
+<head>
+<title>Mobage Stamina Calculator</title>
+<meta charset="UTF-8">
+<style>
+#calc {
+	background-color: #ffcccc;
+	line-height:250%;
+	margin: auto;
+	height: 99%;
+	text-align: center;
+	border: 2px solid orange;
+	width: 400px;|
+}
+
+@media only screen and (max-width: 1000px)
+{
+	#velvet {
+		display:none;
+	}
+	
+	#mashu {
+		display:none;
+	}
+}
+
+@media only screen and (min-width: 1001px)
+{
+	#velvet {
+		height:98%;
+		z-index: -2;
+		position: absolute;
+		left:1px;
+	}
+	#mashu {
+		height:98%;
+		z-index: -1;
+		position: absolute;
+		right:1px;
+	}
+}
+</style>
+</head>
+<body style="background-color:#00ccff">
+
+<img id = "velvet" src="velvet.png" />
+<img id = "mashu" src="mashu.png" />
+
+<div id = "calc">
+<h2 style="color:purple;">スタミナ・カルキュレータ<br />MOBAGE AP CALCULATOR</h2>
+Current Stamina: <br />
+<input id="current" name="current" type="number" min ="0" max="250"/> <br />
+Required Stamina: <br />
+<input id="needed" name="needed" type="number" min="10" max="40" step="5"/> <br />
+Recharge Time: 
+<select name="recharge" id="recharge">
+	<option value="three">3</option>
+	<option value="five">5</option>
+	<option value="ten">10</option>
+</select> <br />
+<button onclick="Compute()">Compute!</button>
+<p id="output"></p>
+
+<div style="font-size: 65%; width:400px;text-align:center;position:absolute;bottom:20px;">email tokusouexceedraft@gmail.com with questions or comments</div>
+</div>
+</div>
+
+<script>
+
+function Compute()
+{
+	// get value of recharge - how long 1 AP takes to regen
+	var chargetime = document.getElementById("recharge");
+	if (chargetime.value == "five")
+	{
+		chargetime = 5;
+	}
+	else if (chargetime.value == "ten")
+	{
+		chargetime = 10;
+	}
+	else if (chargetime.value == "three")
+	{
+		chargetime = 3;
+	}
+	// get Current Stamina
+	var current = document.getElementById("current").value;
+	current = parseInt(current);
+	// get Required Stamina
+	var needed = document.getElementById("needed").value;
+	needed = parseInt(needed);
+	
+	// if current stamina is sufficient
+	if (current > needed)
+	{
+		alert("You have enough stamina, you dummy!");
+	}
+	else if (isNaN(current) || isNaN(needed))
+	{
+		alert("Enter some values, you fool!");
+	}
+	// otherwise
+	else
+	{
+		// calculate total minutes of charge time
+		var hours = 0;
+		var minutes = chargetime * (needed - current);
+		var timestring = "";
+		
+		// convert into hours if necessary
+		if (minutes > 60)
+		{
+			while (minutes > 59)
+			{
+				minutes -= 60;
+				hours += 1;
+			}
+			if (hours > 1)
+			{
+				timestring += hours.toString();
+				timestring += " hours ";
+			}
+			else
+			{
+				timestring += "1 hour ";
+			}
+		}
+		timestring += minutes.toString();
+		timestring += " minutes<br />";
+	
+		// output the time
+		var output = document.getElementById("output");
+		output.innerHTML = "Ready for your next mission in: <br />" + timestring;
+		
+		// get current time, add hours and minutes
+		var date = new Date();
+		var m = date.getMinutes();
+		var h = date.getHours();
+		var tmrw = false;
+		var pm = false;
+		m += minutes;
+		h += hours;
+		// Cycle around
+		if (m > 59)
+		{
+			m -= 60;
+			h += 1;
+		}
+		if (h > 23)
+		{
+			h -= 24;
+			tmrw = true;
+		}
+		if (h > 12)
+		{
+			h -= 12;
+			pm = true;
+		}
+		if (h == 0)
+		{
+			h = 12;
+		}
+		// Add to Output
+		var time = "";
+		if (tmrw == true)
+		{
+			time += "Tomorrow, ";
+		}
+		time += "at ";
+		time += h.toString();
+		time += ":";
+		if (m < 10)
+		{
+			time += "0";
+		}
+		time += m.toString();
+		if (pm == false)
+		{
+			time += " am";
+		}
+		else
+		{
+			time += " pm";
+		}
+		
+		output.innerHTML += time;
+		
+	}
+}
+
+</script>
+
+</body>
+</html>
